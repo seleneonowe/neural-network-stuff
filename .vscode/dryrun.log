@@ -1,0 +1,10 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory '/home/reid/Documents/C Files/nnfs'
+g++ -Wall -g -I. -I./include/ -I./include/utils -I./include/enums -MP -MD -c -o main.o main.cpp
+g++ -Wall -g -I. -I./include/ -I./include/utils -I./include/enums -MP -MD -c -o lib/ActivationFunctions.o lib/ActivationFunctions.cpp
+g++ -Wall -g -I. -I./include/ -I./include/utils -I./include/enums -MP -MD -c -o lib/DenseLayer.o lib/DenseLayer.cpp
+g++ -Wall -g -I. -I./include/ -I./include/utils -I./include/enums -MP -MD -c -o lib/InitFunctions.o lib/InitFunctions.cpp
+g++ -Wall -g -I. -I./include/ -I./include/utils -I./include/enums -MP -MD -c -o lib/NeuralNetwork.o lib/NeuralNetwork.cpp
+g++ -o bin main.o lib/ActivationFunctions.o lib/DenseLayer.o lib/InitFunctions.o lib/NeuralNetwork.o 
+make: Leaving directory '/home/reid/Documents/C Files/nnfs'
+ 
