@@ -1,7 +1,7 @@
 #include "NeuralNetwork.hpp"
 
-NeuralNetwork::NeuralNetwork(const vector<unsigned> shape, const vector<ActivationFunction> activationFunctions, const vector<InitFunction> initFunctions)
-	: numLayers(shape.size()), activationFunctions(activationFunctions), initFunctions(initFunctions)
+NeuralNetwork::NeuralNetwork(const vector<unsigned> shape, const vector<ActivationFunction> activationFunctions, const vector<InitFunction> weightInitFunctions, const vector<InitFunction> biasInitFunctions)
+	: numLayers(shape.size()), activationFunctions(activationFunctions), weightInitFunctions(weightInitFunctions), biasInitFunctions(biasInitFunctions)
 {
 
 	// create layers
@@ -9,7 +9,7 @@ NeuralNetwork::NeuralNetwork(const vector<unsigned> shape, const vector<Activati
 	{
 		LayerType type;
 		unsigned previousLayerSize;
-		// add 1 to sizes because biases are part of weight matrices in this formulation.
+
 		if (i == 0)
 		{
 			type = input;
@@ -18,15 +18,15 @@ NeuralNetwork::NeuralNetwork(const vector<unsigned> shape, const vector<Activati
 		else if (i + 1 == numLayers)
 		{
 			type = output;
-			previousLayerSize = shape.at(i - 1) + 1;
+			previousLayerSize = shape.at(i - 1);
 		}
 		else
 		{
 			type = hidden;
-			previousLayerSize = shape.at(i - 1) + 1;
+			previousLayerSize = shape.at(i - 1);
 		}
 
-		DenseLayer layer(i, previousLayerSize, shape.at(i) + 1, type, activationFunctions.at(i), initFunctions.at(i));
+		DenseLayer layer(i, previousLayerSize, shape.at(i), type, activationFunctions.at(i), weightInitFunctions.at(i), biasInitFunctions.at(i));
 
 		layers.insert(layers.begin() + i, layer);
 	}
