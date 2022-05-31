@@ -4,12 +4,14 @@
 using namespace std;
 
 int main() {
-	VectorXi shape = {2,3,3,2};
-//	vector<ActivationFunction> activationFunctions = {none,ReLU,ReLU,softmax};
+	//seed rng
+	srand(time(0));
 
-//	NeuralNetwork net(shape,activationFunctions,heInitialization);
+	vector<unsigned> shape = {2,3,3,2};
+	vector<ActivationFunction> activationFunctions = {none,ReLU,ReLU,softmax};
+	vector<InitFunction> initFunctions = {zeros,heInitialization,heInitialization,heInitialization};
 
-//	cout << net.layers.at(2).weightsAndBiases << endl;
-	
+	NeuralNetwork net(shape,activationFunctions,initFunctions);
+
 	return 0;
 }

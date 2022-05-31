@@ -1,10 +1,8 @@
 #include "NeuralNetwork.hpp"
 
-NeuralNetwork::NeuralNetwork(const VectorXi shape, const vector<ActivationFunction> activationFunctions, const InitFunction initFunction)
-	: numLayers(shape.size()), activationFunctions(activationFunctions), initFunction(initFunction)
+NeuralNetwork::NeuralNetwork(const vector<unsigned> shape, const vector<ActivationFunction> activationFunctions, const vector<InitFunction> initFunctions)
+	: numLayers(shape.size()), activationFunctions(activationFunctions), initFunctions(initFunctions)
 {
-	// we have numLayers layers in our network
-//	layers.resize(numLayers);
 
 	// create layers
 	for (unsigned i = 0; i < numLayers; i++)
@@ -20,15 +18,15 @@ NeuralNetwork::NeuralNetwork(const VectorXi shape, const vector<ActivationFuncti
 		else if (i + 1 == numLayers)
 		{
 			type = output;
-			previousLayerSize = shape(i - 1) + 1;
+			previousLayerSize = shape.at(i - 1) + 1;
 		}
 		else
 		{
 			type = hidden;
-			previousLayerSize = shape(i - 1) + 1;
+			previousLayerSize = shape.at(i - 1) + 1;
 		}
 
-		DenseLayer layer(i, previousLayerSize, shape(i) + 1, type, activationFunctions.at(i), initFunction);
+		DenseLayer layer(i, previousLayerSize, shape.at(i) + 1, type, activationFunctions.at(i), initFunctions.at(i));
 
 		layers.insert(layers.begin() + i, layer);
 	}

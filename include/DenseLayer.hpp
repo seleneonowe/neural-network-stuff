@@ -13,10 +13,11 @@ class DenseLayer
 public:
 	DenseLayer(unsigned layerNum, unsigned previousLayerSize, unsigned mySize, LayerType, ActivationFunction, InitFunction);
 
-	void forward(MatrixXd inputs, MatrixXd y);
+	void forward(const MatrixXd inputs);
 	void backward();
 
 	void initialize();
+	void applyActivationFunction();
 
 	unsigned layerNum;
 	unsigned previousLayerSize;
@@ -28,5 +29,5 @@ public:
 	// has rows = previous layer neuron number + 1 and cols = this layer neuron number + 1
 	MatrixXd weightsAndBiases;
 	MatrixXd output;
-	MatrixXd activations;
+	MatrixXd outputBeforeActivation;
 };

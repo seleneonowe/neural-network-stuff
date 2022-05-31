@@ -1,4 +1,4 @@
-BINARY=bin
+BINARY=bin.out
 CODEDIRS=. lib lib/utils
 INCDIRS=. ./include/ ./include/utils ./include/enums
 
