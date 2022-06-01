@@ -1,4 +1,7 @@
 #include "NeuralNetwork.hpp"
+#include <iostream>
+
+using namespace std;
 
 NeuralNetwork::NeuralNetwork(const vector<unsigned> shape, const vector<ActivationFunction> activationFunctions, const vector<InitFunction> weightInitFunctions, const vector<InitFunction> biasInitFunctions, const LossFunction lossFunction)
 	: numLayers(shape.size()), activationFunctions(activationFunctions), weightInitFunctions(weightInitFunctions), biasInitFunctions(biasInitFunctions), lossFunction(lossFunction)
@@ -35,28 +38,35 @@ NeuralNetwork::NeuralNetwork(const vector<unsigned> shape, const vector<Activati
 void NeuralNetwork::forward(const MatrixXd &inputBatch, const MatrixXd &y)
 {
 	batchSize = inputBatch.cols();
-
+	cout << "starting forward pass" << endl;
 	layers.at(0).forward(inputBatch);
-
-	for (int i = 1; i < layers.size(); i++)
+	cout << "forwarded first layer, output: \n" << layers.at(0).output << endl;
+	for (long unsigned i = 1; i < layers.size(); i++)
 	{
+		cout << "forwarding layer: " << i << endl;
 		layers.at(i).forward(layers.at(i - 1).output);
+		cout << "forwarded layer " << i << " output: \n" << layers.at(i).output << endl;
 	}
 
 	outputs = layers.at(layers.size() - 1).output;
+	cout << "calculating loss" << endl;
 	calculateLoss(y);
 }
 
 // if using CCE, require y to be an array of one-hot encoded vectors, or a vector of integer values.
 void NeuralNetwork::calculateLoss(const MatrixXd &y_true)
 {
+	losses.resize(batchSize);
 	switch (lossFunction)
 	{
 	case CategoricalCrossEntropy:
 		// check if we have been passed y in the form of an array of one hot encoded vectors
-		if (y_true.rows() == outputs.rows() && y_true.cols() == outputs.cols())
+		if (y_true.rows() == outputs.cols() && y_true.cols() == outputs.rows())
 		{
-			MatrixXd temp = outputs * y_true;
+			cout << "one-hot encoded passed" << endl;
+			cout << "outputs = \n" << outputs << "\n y_true: \n" << y_true << endl;
+			MatrixXd temp = y_true * outputs;
+			cout << "temp : \n" << temp << endl;
 			for (int j = 0; j < temp.cols(); j++)
 			{
 				double sum = 0;
@@ -70,9 +80,10 @@ void NeuralNetwork::calculateLoss(const MatrixXd &y_true)
 		// check if we have been passed y in the form of a row or column vector of integer values
 		else if ((y_true.rows() == batchSize && y_true.cols() == 1) || (y_true.rows() == 1 && y_true.cols() == batchSize))
 		{
+			cout << "classifier passed" << endl;
 			if (y_true.rows() == batchSize)
 			{
-				for (int i = 0; i < batchSize; i++)
+				for (unsigned i = 0; i < batchSize; i++)
 				{
 					losses(i) = outputs((int) y_true(i,0),i); 
 				}
@@ -80,7 +91,9 @@ void NeuralNetwork::calculateLoss(const MatrixXd &y_true)
 		}
 		else
 		{
-			throw std::invalid_argument("y_true must be an array of batchSize one-hot encoded vectors of length equal to number of output nodes, or a row/column vector of class identifiers of length batchSize");
+			throw std::invalid_argument("y_true must be a matrix of batchSize*output nodes (one-hot encoded), or a row/column vector of class identifiers of length batchSize");
 		}
 	}
+
+	meanLoss = losses.mean();
 }

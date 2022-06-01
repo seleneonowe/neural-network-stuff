@@ -1,16 +1,20 @@
 #include "DenseLayer.hpp"
 #include "InitFunctions.hpp"
 #include "ActivationFunctions.hpp"
+#include <iostream>
+
+using namespace std;
 
 // Constructor
 DenseLayer::DenseLayer(unsigned layerNum, unsigned previousLayerSize, unsigned mySize, LayerType type, ActivationFunction activationFunction, InitFunction weightInitFunction, InitFunction biasInitFunction)
 	: layerNum(layerNum), previousLayerSize(previousLayerSize), mySize(mySize), type(type), activationFunction(activationFunction), weightInitFunction(weightInitFunction), biasInitFunction(biasInitFunction)
 {
-	weights.resize(previousLayerSize, mySize);
+	weights.resize(mySize, previousLayerSize);
 	biases.resize(mySize);
 	biasesMatrix.resize(mySize, 1);
 	output.resize(mySize, 1);
 	outputBeforeActivation.resize(mySize, 1);
+	batchSize = 0;
 	initializeWeights();
 	initializeBiases();
 }
@@ -46,12 +50,15 @@ void DenseLayer::forward(const MatrixXd inputs)
 	{
 		output = inputs;
 	}
-	else
+	else // hidden or output layer
 	{
 		if (batchSize != inputs.cols())
 		{
+			cout << "setting batch size and resizing biases matrix" << endl;
 			setBatchSizeAndResizeBiasesMatrix(inputs.cols());
 		}
+
+		cout << "weights: \n" << weights << "\n inputs: \n" << inputs << "\n biases matrix: \n" << biasesMatrix << endl;
 		outputBeforeActivation = weights * inputs + biasesMatrix;
 		applyActivationFunction();
 	}
