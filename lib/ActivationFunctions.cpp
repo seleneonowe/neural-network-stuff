@@ -1,16 +1,27 @@
 #include "ActivationFunctions.hpp"
+#include "MathUtils.hpp"
 
 void ActivationFunctions::forward_ReLU(MatrixXd &inputs) {
-	for(int j = 0; j < inputs.cols(); j++) {
-		for(int i = 0; i < inputs.rows(); i++) {
-			ReLU(inputs(i,j));
-		}
+	MathUtils::applyToAll(inputs,&ReLU);
+}
+
+void ActivationFunctions::backward_ReLU(MatrixXd &dvalues) {
+	MathUtils::applyToAll(dvalues,&dReLU);
+}
+
+double ActivationFunctions::dReLU(double dvalue) {
+	if (dvalue > 0) {
+		return 1;
+	} else {
+		return 0;
 	}
 }
 
-void ActivationFunctions::ReLU(double &input) {
+double ActivationFunctions::ReLU(double input) {
 	if (input < 0) {
-		input = 0;
+		return 0;
+	} else {
+		return input;
 	}
 }
 

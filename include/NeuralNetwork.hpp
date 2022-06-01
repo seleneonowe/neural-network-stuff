@@ -16,7 +16,9 @@ public:
 	void forward(const MatrixXd &inputBatch, const MatrixXd &y);
 	void backward();
 
-	void calculateLoss(const MatrixXd &y);
+	void calculateLoss();
+
+	void computeGradiantOfLossWRTOutput();
 
 	const unsigned numLayers;
 	vector<DenseLayer> layers;
@@ -25,9 +27,15 @@ public:
 	const vector<InitFunction> biasInitFunctions;
 	const LossFunction lossFunction;
 
+	// has size rows = number of output neurons in final layer and columns = batchSize
 	MatrixXd outputs;
+
+	// aka y
+	MatrixXd expectedOutputs;
 	RowVectorXd losses;
 	double meanLoss;
+
+	MatrixXd gradiantOfLossWRTOutput;
 
 	private: 
 		unsigned batchSize;

@@ -9,15 +9,17 @@ public:
 	// The ReLU activation function applied to a matrix during a forward pass
 	static void forward_ReLU(MatrixXd &inputs);
 
-	static MatrixXd backward_ReLU(MatrixXd dvalues);
+	// The derivative of the ReLU function.
+	static void backward_ReLU(MatrixXd &dvalues);
 
 	// The softmax activation function applied during a forward pass
 	static void forward_softmax(MatrixXd &inputs);
 
-	static MatrixXd backward_softmax(MatrixXd dvalues);
+// TODO: write backwards softmax function
+//	static void backward_softmax(MatrixXd &dvalues);
 	
 	// The ReLU activation function applied to a scalar
-	static void ReLU(double &input);
+	static double ReLU(double input);
 
 	// The derivative of the ReLU function applied to a scalar
 	static double dReLU(double dvalue);
