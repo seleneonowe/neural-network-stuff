@@ -1,4 +1,5 @@
 #include "NeuralNetwork.hpp"
+#include "MathUtils.hpp"
 #include <iostream>
 
 using namespace std;
@@ -40,12 +41,14 @@ void NeuralNetwork::forward(const MatrixXd &inputBatch, const MatrixXd &y)
 	batchSize = inputBatch.cols();
 	cout << "starting forward pass" << endl;
 	layers.at(0).forward(inputBatch);
-	cout << "forwarded first layer, output: \n" << layers.at(0).output << endl;
+	cout << "forwarded first layer, output: \n"
+		 << layers.at(0).output << endl;
 	for (long unsigned i = 1; i < layers.size(); i++)
 	{
 		cout << "forwarding layer: " << i << endl;
 		layers.at(i).forward(layers.at(i - 1).output);
-		cout << "forwarded layer " << i << " output: \n" << layers.at(i).output << endl;
+		cout << "forwarded layer " << i << " output: \n"
+			 << layers.at(i).output << endl;
 	}
 
 	outputs = layers.at(layers.size() - 1).output;
@@ -64,9 +67,16 @@ void NeuralNetwork::calculateLoss(const MatrixXd &y_true)
 		if (y_true.rows() == outputs.cols() && y_true.cols() == outputs.rows())
 		{
 			cout << "one-hot encoded passed" << endl;
-			cout << "outputs = \n" << outputs << "\n y_true: \n" << y_true << endl;
+			cout << "outputs = \n"
+				 << outputs << "\n y_true: \n"
+				 << y_true << endl;
+			// we clip so that -log(outputs) never returns infinite
+			MathUtils::clip(outputs, 1e-7, 1 - 1e-7);
+			cout << "clipped outputs: \n"
+				 << outputs << endl;
 			MatrixXd temp = y_true * outputs;
-			cout << "temp : \n" << temp << endl;
+			cout << "temp : \n"
+				 << temp << endl;
 			for (int j = 0; j < temp.cols(); j++)
 			{
 				double sum = 0;
@@ -74,18 +84,24 @@ void NeuralNetwork::calculateLoss(const MatrixXd &y_true)
 				{
 					sum += temp(i, j);
 				}
-				losses(j) = sum;
+				// CCE takes the negative log of the correct confidences
+				losses(j) = -log(sum);
 			}
 		}
 		// check if we have been passed y in the form of a row or column vector of integer values
 		else if ((y_true.rows() == batchSize && y_true.cols() == 1) || (y_true.rows() == 1 && y_true.cols() == batchSize))
 		{
 			cout << "classifier passed" << endl;
+			//we clip so that -log(outputs) never returns infinite
+			MathUtils::clip(outputs, 1e-7, 1 - 1e-7);
+			cout << "clipped outputs: \n"
+				 << outputs << endl;
+
 			if (y_true.rows() == batchSize)
 			{
 				for (unsigned i = 0; i < batchSize; i++)
 				{
-					losses(i) = outputs((int) y_true(i,0),i); 
+					losses(i) = -log(outputs((int)y_true(i, 0), i));
 				}
 			}
 		}
