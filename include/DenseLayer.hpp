@@ -14,7 +14,9 @@ public:
 	DenseLayer(unsigned layerNum, unsigned previousLayerSize, unsigned mySize, LayerType, ActivationFunction, InitFunction weightInitFunction, InitFunction biasInitFunction);
 
 	void forward(const MatrixXd inputs);
-	void backward(const MatrixXd &errorInNextLayer, const MatrixXd &weightsInNextLayer);
+	void backward(const MatrixXd &errorInNextLayer, const MatrixXd &weightsInNextLayer, double &learningRate);
+
+	void updateWeightsAndBiases(double &learningRate);
 
 	void initializeWeights();
 	void initializeBiases();

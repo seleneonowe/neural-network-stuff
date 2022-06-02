@@ -2,9 +2,6 @@
 #include "InitFunctions.hpp"
 #include "ActivationFunctions.hpp"
 #include "MathUtils.hpp"
-#include <iostream>
-
-using namespace std;
 
 // Constructor
 DenseLayer::DenseLayer(unsigned layerNum, unsigned previousLayerSize, unsigned mySize, LayerType type, ActivationFunction activationFunction, InitFunction weightInitFunction, InitFunction biasInitFunction)
@@ -60,57 +57,32 @@ void DenseLayer::forward(const MatrixXd inputs)
 	{
 		if (batchSize != inputs.cols())
 		{
-			cout << "setting batch size and resizing biases matrix" << endl;
 			setBatchSizeAndResizeBiasesMatrix(inputs.cols());
 		}
 
-		cout << "weights: \n"
-			 << weights << "\n inputs: \n"
-			 << inputs << "\n biases matrix: \n"
-			 << biasesMatrix << endl;
 		outputBeforeActivation = weights * inputs + biasesMatrix;
 		applyActivationFunction();
 	}
 }
 
-void DenseLayer::backward(const MatrixXd &errorInNextLayer, const MatrixXd &weightsInNextLayer)
+void DenseLayer::backward(const MatrixXd &errorInNextLayer, const MatrixXd &weightsInNextLayer, double &learningRate)
 {
 
 	if (type == LayerType::output)
 	{ // CALCULATE THE OUTPUT ERROR IN NEURAL NETWORK CLASS THEN PASS IT HERE
 		// there is no previous layer here so errorInNextLayer is the gradient of the cost function wrt the output of the network
 		// the error in the final layer depends only on grad(z) and grad(cost)wrt a
-		cout << "backward for output layer called" << endl;
+		
 		error = errorInNextLayer;
 	}
 	else if (type == LayerType::hidden)
 	{
-		cout << "backward for layer " << layerNum << " called, this is a hidden layer.." << endl;
 		applyDActivationFunction();
 
-		cout << "weights in layer above transpose: \n"
-			 << weightsInNextLayer.transpose() << endl;
-		cout << "error in previous layer: \n"
-			 << errorInNextLayer << endl;
-		cout << "and their product: \n"
-			 << (weightsInNextLayer.transpose() * errorInNextLayer) << endl;
-		cout << "gradOutputBeforeActivation: \n"
-			 << gradOutputBeforeActivation << endl;
-
 		error = (weightsInNextLayer.transpose() * errorInNextLayer).cwiseProduct(gradOutputBeforeActivation);
-
-		cout << "error calculated to be: \n"
-			 << error << endl;
 	}
-
-	cout << "error: \n" << error << endl;
-	cout << "inputs.T: \n"
-		 << inputs.transpose() << endl;
 	
 	gradWeights = error * inputs.transpose() / batchSize;
-
-	cout << "gradWeights: \n"
-		 << gradWeights << endl;
 
 	gradBiases.resize(error.rows());
 	for (int i = 0; i < error.rows(); i++) {
@@ -121,9 +93,13 @@ void DenseLayer::backward(const MatrixXd &errorInNextLayer, const MatrixXd &weig
 		gradBiases(i) = sum / error.cols();
 	}
 
-	cout << "gradBiases: \n" << gradBiases << endl;
+	updateWeightsAndBiases(learningRate);
+}
 
-	cout << "backward computation complete for this layer.." << endl;
+void DenseLayer::updateWeightsAndBiases(double &learningRate) {
+	weights-= learningRate * gradWeights;
+	biases -= learningRate * gradBiases;
+	fixBiasesMatrix();
 }
 
 void DenseLayer::applyDActivationFunction()

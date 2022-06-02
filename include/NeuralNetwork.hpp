@@ -14,7 +14,7 @@ class NeuralNetwork
 public:
 	NeuralNetwork(const vector<unsigned> shape, const vector<ActivationFunction> activationFunctions, const vector<InitFunction> weightInitFunctions, const vector<InitFunction> biasInitFunctions, const LossFunction lossFunction);
 	void forward(const MatrixXd &inputBatch, const MatrixXd &y);
-	void backward();
+	void backward(double &learningRate);
 
 	void calculateLoss();
 
