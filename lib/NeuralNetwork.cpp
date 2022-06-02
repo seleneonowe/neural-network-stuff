@@ -1,5 +1,6 @@
 #include "NeuralNetwork.hpp"
 #include "MathUtils.hpp"
+#include <iostream>
 
 NeuralNetwork::NeuralNetwork(const vector<unsigned> shape, const vector<ActivationFunction> activationFunctions, const vector<InitFunction> weightInitFunctions, const vector<InitFunction> biasInitFunctions, const LossFunction lossFunction)
 	: numLayers(shape.size()), activationFunctions(activationFunctions), weightInitFunctions(weightInitFunctions), biasInitFunctions(biasInitFunctions), lossFunction(lossFunction)
@@ -47,7 +48,36 @@ void NeuralNetwork::forward(const MatrixXd &inputBatch, const MatrixXd &y)
 	outputs = layers.at(layers.size() - 1).output;
 
 	expectedOutputs = y.transpose();
-	calculateLoss();
+	try
+	{
+		calculateLoss();
+	}
+	catch (std::invalid_argument)
+	{
+		for (long unsigned i = 0; i < layers.size(); i++)
+		{
+			std::cout << "output of layer " << i << " is: \n" << layers.at(i).output << std::endl;
+			std::cout << "weights of layer " << i << " is: \n" << layers.at(i).weights << std::endl;
+			std::cout << "biases of layer " << i << " is: \n" << layers.at(i).biases << std::endl;
+			std::cout << "gradweights of layer " << i << " is: \n" << layers.at(i).gradWeights << std::endl;
+			std::cout << "gradbiases of layer " << i << " is: \n" << layers.at(i).gradBiases << std::endl;
+			std::cout << "error of layer " << i << " is: \n" << layers.at(i).error << std::endl;
+			std::cout << "batchSize of layer " << i << " is: \n" << layers.at(i).batchSize << std::endl;
+			std::cout << "gradOutputBeforeActivation of layer " << i << " is: \n" << layers.at(i).gradOutputBeforeActivation << std::endl;
+		}
+		std::cout << "output of final layer: \n"
+				  << layers.at(layers.size() - 1).output << std::endl;
+		std::cout << "gradoutput of final layer: \n"
+				  << gradiantOfLossWRTOutput << std::endl;
+
+		std::cout << "input of final layer: \n"
+				  << layers.at(layers.size() - 1).inputs << std::endl;
+
+		std::cout << "output of final layer before activation: \n"
+				  << layers.at(layers.size() - 1).outputBeforeActivation << std::endl;
+
+		__throw_exception_again;
+	}
 }
 
 void NeuralNetwork::backward(double &learningRate)
@@ -86,6 +116,7 @@ void NeuralNetwork::calculateLoss()
 		// check if we have been passed y in the form of an array of one hot encoded vectors
 		if (expectedOutputs.rows() == outputs.rows() && expectedOutputs.cols() == outputs.cols())
 		{
+			MatrixXd TESTONLY = outputs;
 			// we clip so that -log(outputs) never returns infinite
 			MathUtils::clip(outputs, 1e-7, 1 - 1e-7);
 
@@ -99,8 +130,26 @@ void NeuralNetwork::calculateLoss()
 				{
 					sum += temp(i, j);
 				}
+
+				if (sum != sum)
+				{
+
+					std::cout << "outputs before clipping: \n"
+							  << TESTONLY << std::endl;
+					std::cout << "outputs: \n"
+							  << outputs << std::endl;
+					std::cout << "expectedOutputs: \n"
+							  << expectedOutputs << std::endl;
+					std::cout << "temp: \n"
+							  << temp << std::endl;
+					throw std::invalid_argument("ayo how did this happen");
+				}
 				// CCE takes the negative log of the correct confidences
-				losses(j) = -log(sum);
+				losses(j) = -log(MathUtils::clip(sum, 1e-7, 1 - 1e-7));
+				if (losses(j) != losses(j))
+				{
+					throw std::invalid_argument("wtf lol");
+				}
 			}
 		}
 		// check if we have been passed y in the form of a row or column vector of integer values
@@ -113,14 +162,14 @@ void NeuralNetwork::calculateLoss()
 			{
 				for (unsigned i = 0; i < batchSize; i++)
 				{
-					losses(i) = -log(outputs((int)expectedOutputs(i, 0), i));
+					losses(i) = -log(MathUtils::clip(outputs((int)expectedOutputs(i, 0), i), 1e-7, 1 - 1e-7));
 				}
 			}
 			else
 			{ // do the same thing but switch rows and columns in expected outputs
 				for (unsigned i = 0; i < batchSize; i++)
 				{
-					losses(i) = -log(outputs((int)expectedOutputs(0, i), i));
+					losses(i) = -log(MathUtils::clip(outputs((int)expectedOutputs(0, i), i), 1e-7, 1e-7));
 				}
 			}
 		}

@@ -1,5 +1,10 @@
 #include "MathUtils.hpp"
+#include "pyrange.hpp"
 #include <tuple>
+#include <set>
+#include <iostream>
+
+using namespace std;
 
 void MathUtils::clip(MatrixXd &inputs, const double &min, const double &max)
 {
@@ -22,8 +27,9 @@ double MathUtils::clip(double input, double min, double max)
 	}
 }
 
-bool MathUtils::isShapeEqual(MatrixXd &matrix1, MatrixXd &matrix2) {
-	return (matrix1.cols()==matrix2.cols() && matrix1.rows() == matrix2.rows());
+bool MathUtils::isShapeEqual(MatrixXd &matrix1, MatrixXd &matrix2)
+{
+	return (matrix1.cols() == matrix2.cols() && matrix1.rows() == matrix2.rows());
 }
 
 void MathUtils::applyToAll(MatrixXd &inputs, double (*func)(double))
@@ -90,7 +96,6 @@ std::tuple<VectorXd, double> MathUtils::linspace(double start, double stop, unsi
 		stepSize = (stop - start) / (num + 1);
 	}
 
-
 	VectorXd outVector(num);
 
 	for (unsigned int i = 0; i < num; i++)
@@ -98,5 +103,65 @@ std::tuple<VectorXd, double> MathUtils::linspace(double start, double stop, unsi
 		outVector(i) = start + i * stepSize;
 	}
 
-	return std::tuple<VectorXd,double>(outVector,stepSize);
+	return std::tuple<VectorXd, double>(outVector, stepSize);
+}
+
+std::vector<std::tuple<MatrixXd, VectorXd>> MathUtils::createRandomBatchesFromDataSet(std::tuple<MatrixXd, VectorXd> &dataSet, unsigned numberOfBatches)
+{
+	unsigned dataSetSize = std::get<1>(dataSet).size();
+	std::set<unsigned> unusedElements;
+	for (int i : pyrange(dataSetSize))
+	{
+		unusedElements.insert(i);
+	}
+	std::set<unsigned>::iterator itr;
+
+	std::vector<std::tuple<MatrixXd, VectorXd>> output;
+	output.resize(numberOfBatches);
+
+	for (unsigned i = 0; i < numberOfBatches; i++)
+	{
+		unsigned j = 0;
+		while (j < dataSetSize / numberOfBatches && unusedElements.size() != 0)
+		{
+			int elemNumber = rand() % unusedElements.size();
+			itr = unusedElements.begin();
+			for (int i = 0; i < elemNumber; i++)
+			{
+				itr++;
+			}
+
+			// get matrix at i
+			int currentRows = std::get<0>(output.at(i)).rows();
+			int currentCols = std::get<0>(output.at(i)).cols();
+
+			if (currentRows == 0)
+			{
+				std::get<0>(output.at(i)).resize(std::get<0>(dataSet).rows(), currentCols + 1);
+				std::get<0>(output.at(i)) = std::get<0>(dataSet).col(*itr);
+
+				// vector at i
+				std::get<1>(output.at(i)).resize(currentCols + 1);
+				// stack vertically
+				std::get<1>(output.at(i)) = std::get<1>(dataSet).row(*itr);
+			}
+			else
+			{
+				MatrixXd temp(currentRows, currentCols + 1);
+				// stack horizontally
+				temp << std::get<0>(output.at(i)), std::get<0>(dataSet).col(*itr);
+				
+				std::get<0>(output.at(i)) = temp;
+				// vector at i
+				VectorXd temp2(currentCols + 1);
+				// stack vertically
+				temp2 << std::get<1>(output.at(i)), std::get<1>(dataSet).row(*itr);
+				std::get<1>(output.at(i)) = temp2;
+			}
+
+			unusedElements.erase(itr);
+			j++;
+		}
+	}
+	return output;
 }

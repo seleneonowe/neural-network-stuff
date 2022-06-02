@@ -3,6 +3,7 @@
 
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
+using Eigen::VectorXi;
 
 class MathUtils {
 	public:
@@ -13,6 +14,8 @@ class MathUtils {
 	static bool isShapeEqual(MatrixXd &matrix1, MatrixXd &matrix2);
 
 	static void convertToOneHotEncoded(MatrixXd &inputs, unsigned );
+
+	static std::vector<std::tuple<MatrixXd,VectorXd>> createRandomBatchesFromDataSet(std::tuple<MatrixXd,VectorXd> &dataSet,unsigned numberOfBatches);
 	
 	static void applyToAll(MatrixXd &inputs, double (*func)(double));
 

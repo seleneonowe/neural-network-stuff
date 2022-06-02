@@ -3,7 +3,7 @@
 #include "pyrange.hpp"
 #include <random>
 
-tuple<MatrixXd, RowVectorXi> DataSetGenerator::createSpiralData(unsigned int samples, unsigned int classes)
+tuple<MatrixXd, VectorXd> DataSetGenerator::createSpiralData(unsigned int samples, unsigned int classes)
 {
 	std::random_device rd{};
 	std::mt19937 mt{rd()};
@@ -14,7 +14,7 @@ tuple<MatrixXd, RowVectorXi> DataSetGenerator::createSpiralData(unsigned int sam
 	X.setZero();
 
 	// y indexes the data in X by class.
-	RowVectorXi y(samples * classes);
+	VectorXd y(samples * classes);
 	y.setZero();
 
 	for (int class_number : pyrange(classes)) // MathUtils::range(1,classes))
@@ -42,5 +42,5 @@ tuple<MatrixXd, RowVectorXi> DataSetGenerator::createSpiralData(unsigned int sam
 		}
 	}
 
-	return tuple<MatrixXd, RowVectorXi>(X, y);
+	return tuple<MatrixXd, VectorXd>(X, y);
 }
