@@ -1,4 +1,5 @@
 #include "MathUtils.hpp"
+#include <tuple>
 
 void MathUtils::clip(MatrixXd &inputs, const double &min, const double &max)
 {
@@ -74,4 +75,28 @@ void MathUtils::convertToOneHotEncoded(MatrixXd &inputs, unsigned numberOfClasse
 	{
 		throw std::invalid_argument("must pass a class identifier matrix (row or column vector) to be able to convert to one-hot encoding");
 	}
+}
+
+std::tuple<VectorXd, double> MathUtils::linspace(double start, double stop, unsigned int num=10, bool endpoint=false)
+{
+	double stepSize;
+
+	if (endpoint)
+	{
+		stepSize = (stop - start) / num;
+	}
+	else
+	{
+		stepSize = (stop - start) / (num + 1);
+	}
+
+
+	VectorXd outVector(num);
+
+	for (unsigned int i = 0; i < num; i++)
+	{
+		outVector(i) = start + i * stepSize;
+	}
+
+	return std::tuple<VectorXd,double>(outVector,stepSize);
 }

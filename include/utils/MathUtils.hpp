@@ -2,6 +2,7 @@
 #include <Eigen/Dense>
 
 using Eigen::MatrixXd;
+using Eigen::VectorXd;
 
 class MathUtils {
 	public:
@@ -16,4 +17,6 @@ class MathUtils {
 	static void applyToAll(MatrixXd &inputs, double (*func)(double));
 
 	static void applyToAll(MatrixXd &inputs, double, double, double (*func)(double,double,double));
+
+	static std::tuple<VectorXd, double> MathUtils::linspace(double start, double stop, unsigned int num=10, bool endpoint=false);
 };

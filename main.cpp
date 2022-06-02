@@ -16,21 +16,17 @@ int main()
 
 	NeuralNetwork net(shape, activationFunctions, weightInitFunctions, biasInitFunctions, CategoricalCrossEntropy);
 
-	MatrixXd inputs(2, 3);
+	int batchSize = 4;
+	MatrixXd inputs(2, batchSize);
 	inputs.setRandom();
 
-	MatrixXd y_true(3, 1);
+	MatrixXd y_true(batchSize, 1);
+
 	for (int i = 0; i < y_true.rows(); i++) {
 		y_true(i,0) = (int) rand() % 3;
 	} 
 
-	// cout << "y to be passed: \n"
-	// 	 << y_true << endl;
-
 	MathUtils::convertToOneHotEncoded(y_true, 4);
-
-	// cout << "y in one hot encoded form: \n"
-	// 	 << y_true << endl;
 
 	net.forward(inputs, y_true);
 
@@ -44,7 +40,7 @@ int main()
 	cout << "mean loss: " << net.meanLoss << endl;
 	cout << "******************" << endl;
 
-	for (int i = 0; i < 10000; i++)
+	for (int i = 0; i < 1000; i++)
 	{
 
 		net.forward(inputs, y_true);
@@ -54,6 +50,6 @@ int main()
 	cout << "******************" << endl;
 	cout << "mean loss: " << net.meanLoss << endl;
 	cout << "******************" << endl;
-	
+
 	return 0;
 }
