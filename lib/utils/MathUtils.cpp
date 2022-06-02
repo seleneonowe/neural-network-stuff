@@ -77,7 +77,7 @@ void MathUtils::convertToOneHotEncoded(MatrixXd &inputs, unsigned numberOfClasse
 	}
 }
 
-std::tuple<VectorXd, double> MathUtils::linspace(double start, double stop, unsigned int num=10, bool endpoint=false)
+std::tuple<VectorXd, double> MathUtils::linspace(double start, double stop, unsigned int num, bool endpoint)
 {
 	double stepSize;
 
