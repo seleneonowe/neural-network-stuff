@@ -54,7 +54,7 @@ public:
 	VectorXd gradBiases;
 	MatrixXd gradOutputBeforeActivation;
 
-//private:
+private:
 	unsigned batchSize;
 
 	// sets each column of the biases matrix equal to the biases vector

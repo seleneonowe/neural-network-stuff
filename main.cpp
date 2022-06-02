@@ -22,7 +22,7 @@ int main()
 
 	auto spiralDataSet = DataSetGenerator::createSpiralData(10, numberOfClasses);
 
-	unsigned numberOfBatches = 3;
+	unsigned numberOfBatches = 5;
 	auto batchedData = MathUtils::createRandomBatchesFromDataSet(spiralDataSet, numberOfBatches);
 
 	// int batchSize = 4;
@@ -47,16 +47,13 @@ int main()
 	cout << "******************" << endl;
 
 	double learningRate = 0.01;
-	unsigned repeats = 1000;
+	unsigned repeats = 10000;
 
 	net.backward(learningRate);
 
 	cout << "******************" << endl;
 	cout << "mean loss: " << net.meanLoss << endl;
 	cout << "******************" << endl;
-
-	cout << "-log(1e-7) is " << -log(1e-7) << endl;
-	cout << "1-1e-7 is: " << 1-1e-7 << endl;
 
 	for (unsigned i = 0; i < numberOfBatches; i++)
 	{
@@ -70,7 +67,6 @@ int main()
 	}
 
 	cout << "******************" << endl;
-	cout << "losses: \n" << net.losses << endl;
 	cout << "mean loss: " << net.meanLoss << endl;
 	cout << "******************" << endl;
 
