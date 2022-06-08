@@ -33,13 +33,13 @@ public:
 	void forward(const MatrixXd &inputBatch, const MatrixXd &y);
 	void backward(double &learningRate);
 
+	const double& getMeanLoss();
+
+private:
 	void calculateLoss();
 
 	void computeGradiantOfLossWRTOutput();
 
-	const double& getMeanLoss();
-
-private:
 	const unsigned numLayers;
 	vector<DenseLayer> layers;
 	const vector<ActivationFunction> activationFunctions;

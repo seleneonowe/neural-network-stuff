@@ -26,16 +26,26 @@
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
 
+/*
+	Objects of this class represent a layer of neurons within the network. One can pass inputs forwards
+	through the layer to calculate the activations ofthe neurons, and pass information about the next layer backwards
+	to calculate the error and therefore the gradiant of the weights and biases.
+*/
 class DenseLayer
 {
 public:
 	DenseLayer(unsigned layerNum, unsigned previousLayerSize, unsigned mySize, LayerType, ActivationFunction, InitFunction weightInitFunction, InitFunction biasInitFunction);
 
-	void forward(const MatrixXd inputs);
+	void forward(const MatrixXd &inputs);
 	void backward(const MatrixXd &errorInNextLayer, const MatrixXd &weightsInNextLayer, double &learningRate);
 
 	void updateWeightsAndBiases(double &learningRate);
 
+	const MatrixXd& getOutput();
+	const MatrixXd& getWeights();
+	const MatrixXd& getError();
+
+private:
 	void initializeWeights();
 	void initializeBiases();
 
@@ -45,14 +55,13 @@ public:
 	// Applies the derivative of activationFunction to outputBeforeActivation and sets gradOutputBeforeActivation equal to the result.
 	void applyDActivationFunction();
 
+
 	// Sets batch size, then sets the biases matrix columns equal to the batch size, then calls fixBiasesMatrix()
 	void setBatchSizeAndResizeBiasesMatrix(unsigned size);
 
-	const MatrixXd& getOutput();
-	const MatrixXd& getWeights();
-	const MatrixXd& getError();
+	// sets each column of the biases matrix equal to the biases vector
+	void fixBiasesMatrix();
 
-private:
 	unsigned layerNum;
 	unsigned previousLayerSize;
 	unsigned mySize;
@@ -78,7 +87,4 @@ private:
 	MatrixXd gradOutputBeforeActivation;
 
 	unsigned batchSize;
-
-	// sets each column of the biases matrix equal to the biases vector
-	void fixBiasesMatrix();
 };

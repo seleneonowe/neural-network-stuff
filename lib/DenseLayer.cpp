@@ -63,7 +63,7 @@ void DenseLayer::initializeBiases()
 	}
 }
 
-void DenseLayer::forward(const MatrixXd inputs)
+void DenseLayer::forward(const MatrixXd &inputs)
 {
 	this->inputs = inputs;
 
