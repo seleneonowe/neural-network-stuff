@@ -48,6 +48,11 @@ public:
 	// Sets batch size, then sets the biases matrix columns equal to the batch size, then calls fixBiasesMatrix()
 	void setBatchSizeAndResizeBiasesMatrix(unsigned size);
 
+	const MatrixXd& getOutput();
+	const MatrixXd& getWeights();
+	const MatrixXd& getError();
+
+private:
 	unsigned layerNum;
 	unsigned previousLayerSize;
 	unsigned mySize;
@@ -72,7 +77,6 @@ public:
 	VectorXd gradBiases;
 	MatrixXd gradOutputBeforeActivation;
 
-private:
 	unsigned batchSize;
 
 	// sets each column of the biases matrix equal to the biases vector

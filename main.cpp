@@ -23,6 +23,15 @@
 
 using namespace std;
 
+/*
+Main to-do list
+TODO: make program ask for the below options for parameters, dataset, etc at runtime so I don't have to recompile to do something different.
+TODO: add momentum, to help with getting caught in local minima
+TODO: add some more functions that are also commonly used, like tanh and sigmoid
+TODO: implement learning rate decay?
+TODO: do training in multiple threads
+TODO: add ability to save/load network state to/from file; same with generated data 
+*/
 int main()
 {
 	// seed rng
@@ -70,7 +79,7 @@ int main()
 	net.backward(learningRate);
 
 	cout << "******************" << endl;
-	cout << "mean loss: " << net.meanLoss << endl;
+	cout << "mean loss: " << net.getMeanLoss() << endl;
 	cout << "******************" << endl;
 
 	for (unsigned i = 0; i < numberOfBatches - 1; i++)
@@ -89,7 +98,7 @@ int main()
 	}
 
 	cout << "******************" << endl;
-	cout << "mean loss: " << net.meanLoss << endl;
+	cout << "mean loss: " << net.getMeanLoss() << endl;
 	cout << "******************" << endl;
 
 	// we kept a single batch not as part of the training data so we can see how well it classifies this
@@ -98,7 +107,7 @@ int main()
 	net.forward(get<0>(batchedData.at(numberOfBatches - 1)), y);
 
 	cout << "******************" << endl;
-	cout << "mean loss: " << net.meanLoss << endl;
+	cout << "mean loss: " << net.getMeanLoss() << endl;
 	cout << "******************" << endl;
 
 	return 0;

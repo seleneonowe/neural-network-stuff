@@ -60,10 +60,10 @@ void NeuralNetwork::forward(const MatrixXd &inputBatch, const MatrixXd &y)
 
 	for (long unsigned i = 1; i < layers.size(); i++)
 	{
-		layers.at(i).forward(layers.at(i - 1).output);
+		layers.at(i).forward(layers.at(i - 1).getOutput());
 	}
 
-	outputs = layers.at(layers.size() - 1).output;
+	outputs = layers.at(layers.size() - 1).getOutput();
 
 	expectedOutputs = y.transpose();
 	calculateLoss();
@@ -78,7 +78,7 @@ void NeuralNetwork::backward(double &learningRate)
 	for (int i = numLayers - 2; i > 0; i--)
 	{
 		// for each other layer, we feed the error of the previous layer back)
-		layers.at(i).backward(layers.at(i + 1).error, layers.at(i + 1).weights, learningRate);
+		layers.at(i).backward(layers.at(i + 1).getError(), layers.at(i + 1).getWeights(), learningRate);
 	}
 }
 
@@ -152,4 +152,8 @@ void NeuralNetwork::calculateLoss()
 	}
 
 	meanLoss = losses.mean();
+}
+
+const double& NeuralNetwork::getMeanLoss() { 
+	return meanLoss;
 }

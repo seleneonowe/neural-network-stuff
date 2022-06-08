@@ -184,3 +184,14 @@ void DenseLayer::fixBiasesMatrix()
 		}
 	}
 }
+
+const MatrixXd& DenseLayer::getError() {
+	return error;
+}
+const MatrixXd& DenseLayer::getWeights() {
+	return weights;
+}
+const MatrixXd& DenseLayer::getOutput() {
+	return output;
+}
+
