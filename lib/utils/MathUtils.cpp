@@ -1,10 +1,8 @@
 #include "MathUtils.hpp"
 #include "pyrange.hpp"
 #include <tuple>
-#include <set>
+#include <bits/stdc++.h>
 #include <iostream>
-
-using namespace std;
 
 void MathUtils::clip(MatrixXd &inputs, const double &min, const double &max)
 {
@@ -109,12 +107,14 @@ std::tuple<VectorXd, double> MathUtils::linspace(double start, double stop, unsi
 std::vector<std::tuple<MatrixXd, VectorXd>> MathUtils::createRandomBatchesFromDataSet(std::tuple<MatrixXd, VectorXd> &dataSet, unsigned numberOfBatches)
 {
 	unsigned dataSetSize = std::get<1>(dataSet).size();
-	std::set<unsigned> unusedElements;
+	std::unordered_set<unsigned> unusedElements;
+
 	for (int i : pyrange(dataSetSize))
 	{
 		unusedElements.insert(i);
 	}
-	std::set<unsigned>::iterator itr;
+
+	std::unordered_set<unsigned>::iterator itr;
 
 	std::vector<std::tuple<MatrixXd, VectorXd>> output;
 	output.resize(numberOfBatches);
@@ -150,7 +150,7 @@ std::vector<std::tuple<MatrixXd, VectorXd>> MathUtils::createRandomBatchesFromDa
 				MatrixXd temp(currentRows, currentCols + 1);
 				// stack horizontally
 				temp << std::get<0>(output.at(i)), std::get<0>(dataSet).col(*itr);
-				
+
 				std::get<0>(output.at(i)) = temp;
 				// vector at i
 				VectorXd temp2(currentCols + 1);
