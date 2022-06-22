@@ -56,13 +56,16 @@ void NeuralNetwork::forward(const MatrixXd &inputBatch, const MatrixXd &y)
 {
 	batchSize = inputBatch.cols();
 
+	// pass the inputs to the first layer
 	layers.at(0).forward(inputBatch);
 
+	// pass each layer the output of the previous layer
 	for (long unsigned i = 1; i < layers.size(); i++)
 	{
 		layers.at(i).forward(layers.at(i - 1).getOutput());
 	}
 
+	// get the output of the final layer and set the network output to this.
 	outputs = layers.at(layers.size() - 1).getOutput();
 
 	expectedOutputs = y.transpose();

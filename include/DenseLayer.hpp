@@ -34,19 +34,28 @@ using Eigen::VectorXd;
 class DenseLayer
 {
 public:
+	// DenseLayer objects store their position in the network, the number of neurons in their and the previous layers, their type (input, hidden, output), and their activation and initialization functions.
 	DenseLayer(unsigned layerNum, unsigned previousLayerSize, unsigned mySize, LayerType, ActivationFunction, InitFunction weightInitFunction, InitFunction biasInitFunction);
 
+	// passes inputs forward through this layer, computing the output for this layer.
 	void forward(const MatrixXd &inputs);
+
+	// passes error backwards through this layer, computing the error for this layer.
 	void backward(const MatrixXd &errorInNextLayer, const MatrixXd &weightsInNextLayer, double &learningRate);
 
+	// updates weights and biases by subtracting learningRate * their gradient (computed by backward pass)
 	void updateWeightsAndBiases(double &learningRate);
 
+	// getters
 	const MatrixXd& getOutput();
 	const MatrixXd& getWeights();
 	const MatrixXd& getError();
 
 private:
+	// initializes the weights using the specified initialization function
 	void initializeWeights();
+	
+	// initializes the biases using the specified initialization function
 	void initializeBiases();
 
 	// Applies activationFunction to outputBeforeActivation and sets output equal to the result.
@@ -62,9 +71,13 @@ private:
 	// sets each column of the biases matrix equal to the biases vector
 	void fixBiasesMatrix();
 
+	// this layer's position in the network
 	unsigned layerNum;
+	// number of neurons in previous layer
 	unsigned previousLayerSize;
+	// number of neurons in this layer
 	unsigned mySize;
+
 	LayerType type;
 	ActivationFunction activationFunction;
 	InitFunction weightInitFunction;

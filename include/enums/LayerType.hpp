@@ -18,6 +18,11 @@
 
 #pragma once
 
+/*
+	Names the different types of layer allowed.
+	For dense layers, input, hidden and output layers may exist.
+	Possibility of using this to add e.g. non-densely connected layers.
+*/
 enum LayerType
 {
 	input,

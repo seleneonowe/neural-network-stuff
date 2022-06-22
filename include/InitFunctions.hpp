@@ -23,6 +23,10 @@
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
 
+/*
+	Class acting as a library of initialization functions, stored as static methods. 
+	May be expanded with additional functions and a corresponding entry added to the InitFunction enum.
+*/
 class InitFunctions
 {
 public:

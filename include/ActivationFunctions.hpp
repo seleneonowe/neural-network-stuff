@@ -21,6 +21,10 @@
 
 using Eigen::MatrixXd;
 
+/*
+	Class acting as a library of activation functions, stored as static methods. 
+	May be expanded with additional functions and a corresponding entry added to the ActivationFunction enum.
+*/
 class ActivationFunctions
 {
 public:

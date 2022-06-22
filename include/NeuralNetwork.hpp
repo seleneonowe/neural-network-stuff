@@ -26,22 +26,38 @@ using Eigen::MatrixXd;
 using Eigen::RowVectorXd;
 using std::vector;
 
+/*
+	Neural Network objects are arbitrarily shaped (any number of neurons in any number of layers)
+	 and densely connected (every neuron connected to every other neuron in the previous layer).
+	Different activation functions and weight/bias initialization functions may be specified per-layer.
+	Different loss functions may be specified.
+*/
 class NeuralNetwork
 {
 public:
+	// NeuralNetwork objects must have specified shape (number of neurons in each layer), the activation and weight/bias initialization functions for each layer, and the loss function for the network.
 	NeuralNetwork(const vector<unsigned> shape, const vector<ActivationFunction> activationFunctions, const vector<InitFunction> weightInitFunctions, const vector<InitFunction> biasInitFunctions, const LossFunction lossFunction);
+
+	// will pass inputBatch forward through the network, and compare the output to the expected output y to calculate the loss.
 	void forward(const MatrixXd &inputBatch, const MatrixXd &y);
+
+	// will perform a backward pass through the network with the given learning rate.
 	void backward(double &learningRate);
 
-	const double& getMeanLoss();
+	// getters
+	const double &getMeanLoss();
 
 private:
 	void calculateLoss();
 
 	void computeGradiantOfLossWRTOutput();
 
+	// number of layers in the network (input + hidden + output)
 	const unsigned numLayers;
+
+	// the layers themselves, stored as a vector of DenseLayer objects
 	vector<DenseLayer> layers;
+
 	const vector<ActivationFunction> activationFunctions;
 	const vector<InitFunction> weightInitFunctions;
 	const vector<InitFunction> biasInitFunctions;
@@ -52,7 +68,11 @@ private:
 
 	// aka y
 	MatrixXd expectedOutputs;
+
+	// losses for each batch
 	RowVectorXd losses;
+
+	// mean of losses
 	double meanLoss;
 
 	MatrixXd gradiantOfLossWRTOutput;

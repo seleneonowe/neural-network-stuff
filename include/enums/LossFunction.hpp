@@ -19,6 +19,10 @@
 
 #pragma once
 
+/*
+	Names the supported types of loss function.
+	May be expanded as needed.
+*/
 enum LossFunction {
 	CategoricalCrossEntropy
 };

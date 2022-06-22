@@ -23,12 +23,20 @@ using Eigen::MatrixXd;
 using Eigen::VectorXd;
 using std::tuple;
 
+/*
+	Class used as a library of functions that can procedurally generate datasets, stored as static methods.
+	May be expanded.
+	The created data sets are intended to be used as example datasets to be passed to a neural network, which
+	should try to classify the data correctly.
+*/
 class DataSetGenerator {
 	public:
-		// makes <classes> sets of spiral data with <samples> samples.
+		// makes <classes> sets of spiral-shaped data with <samples> samples.
 		static tuple<MatrixXd,VectorXd> createSpiralData(unsigned int samples, unsigned int classes);
 
+		// makes <classes> sets of sinusoidal-shaped data with <samples> samples.
 		static tuple<MatrixXd,VectorXd> createSinusoidalData(unsigned int samples, unsigned int classes);
 
+		// makes <classes> sets of block-shaped data with <samples> samples.
 		static tuple<MatrixXd,VectorXd> createBlockData(unsigned int samples, unsigned int classes);
 };

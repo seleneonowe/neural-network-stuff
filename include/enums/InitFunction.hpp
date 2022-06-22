@@ -18,6 +18,10 @@
 
 #pragma once
 
+/*
+	Names the supported types of initialization function.
+	May be expanded as needed.
+*/
 enum InitFunction {
 	zeros,
 	heInitialization

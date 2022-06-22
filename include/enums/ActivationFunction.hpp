@@ -17,6 +17,10 @@
 
 #pragma once
 
+/*
+	Names the supported types of activation function.
+	May be expanded as needed.
+*/
 enum ActivationFunction {
 	none,
 	softmax,
